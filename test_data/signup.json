@@ -1,0 +1,16 @@
+{
+    "gender": "male",
+    "password": "Password123!",
+    "day": "1",
+    "month": "January",
+    "year": "1995",
+    "firstName": "Automation",
+    "lastName": "Engineer",
+    "company": "OpenAI",
+    "address": "123 Test Street",
+    "country": "Canada",
+    "state": "Ontario",
+    "city": "Toronto",
+    "zipcode": "12345",
+    "mobileNumber": "08123456789"
+}
