@@ -32,4 +32,4 @@ after careful consideration, since i don't have much time anyway, i'm going for 
 ~~- Create functions for login~~
 ~~- Create test for login~~
 ~~- Review code and run test~~
-- Commit to github
+~~- Commit to github~~
