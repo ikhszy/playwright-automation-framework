@@ -24,10 +24,10 @@ the following are list of types:
 # Today's plan
 1. Analyzing which cases to be part of which testing type [DONE]
 2. Introduce minimal basePage [DONE]
-3. Continue on phase 1:
+3. Continue on phase 1: [DONE]
   - LGN-002 (Invalid email)
   - LGN-003 (Incorrect password)
-4. Wrapping up:
+4. Wrapping up:[Done]
   - Commits and push
   - Code review by Kiro
   - Open PR and merge to main branch
