@@ -22,7 +22,7 @@ the following are list of types:
 8. Merge into Main
 
 # Today's plan
-1. Analyzing which cases to be part of which testing type
+1. Analyzing which cases to be part of which testing type [DONE]
 2. Introduce minimal basePage
 3. Continue on phase 1:
   - LGN-002 (Invalid email)
@@ -85,3 +85,4 @@ Checkout
 | CHK-001 | Place order with comment | y | y | y | y |
 | CHK-002 | Place order without comment | n | n | y | n |
 | CHK-003 | Cancel order | n | n | y | n |
+

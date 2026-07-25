@@ -1,13 +1,15 @@
 import { expect, type Locator, type Page } from '@playwright/test';
+import { BasePage } from '../BasePage';
 
-export class CommonHeader {
+export class CommonHeader extends BasePage {
     readonly home;
     readonly products;
     readonly cart;
     readonly login;
     readonly logout;
 
-    constructor(private readonly page: Page) {
+    constructor(page: Page) {
+        super(page)
         this.home = page.locator('a', {hasText: ' Home'});
         this.products = page.locator('a', {hasText: ' Products'});
         this.cart = page.locator('a', {hasText: ' Cart'});
