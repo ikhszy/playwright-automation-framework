@@ -23,7 +23,7 @@ the following are list of types:
 
 # Today's plan
 1. Analyzing which cases to be part of which testing type [DONE]
-2. Introduce minimal basePage
+2. Introduce minimal basePage [DONE]
 3. Continue on phase 1:
   - LGN-002 (Invalid email)
   - LGN-003 (Incorrect password)
