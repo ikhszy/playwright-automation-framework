@@ -1,7 +1,8 @@
 import { type Page, type Locator, expect } from "@playwright/test";
 import signup from '../test_data/signup.json';
+import { BasePage } from "./BasePage";
 
-export class SignupPage {
+export class SignupPage extends BasePage {
 
     // on login page
     readonly newName;
@@ -33,7 +34,8 @@ export class SignupPage {
     readonly formMobilenumber;
     readonly formCreateButton;
 
-    constructor(private page: Page) {
+    constructor(page: Page) {
+        super(page);
         this.newName = this.page.locator('[data-qa="signup-name"]')
         this.newEmail = this.page.locator('[data-qa="signup-email"]')
         this.newSignupButton = this.page.locator('[data-qa="signup-button"]')
