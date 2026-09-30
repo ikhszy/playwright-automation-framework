@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { CommonHeader } from '../../pages/common/CommonHeader.ts'
 import { SignupPage } from '../../pages/SignupPage.ts'
-import { randomEmail } from '../../utils/Randomizer'
+import { randomEmail } from '../../utils/Randomizer.ts'
 import signupData from '../../test_data/signup.json'
 
 test.describe('Testsuite for all related to signup', ()=> {

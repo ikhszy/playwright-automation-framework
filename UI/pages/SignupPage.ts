@@ -1,5 +1,5 @@
 import { type Page, type Locator, expect } from "@playwright/test";
-import signup from '../test_data/signup.json';
+import signup from '../../test_data/signup.json';
 import { BasePage } from "./BasePage";
 
 export class SignupPage extends BasePage {
