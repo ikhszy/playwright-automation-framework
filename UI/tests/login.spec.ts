@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { CommonHeader } from '../../pages/common/CommonHeader.ts'
-import { LoginPage } from '../../pages/LoginPage.ts'
+import { CommonHeader } from '../pages/common/CommonHeader.ts'
+import { LoginPage } from '../pages/LoginPage.ts'
 import login from '../../test_data/login.json'
 
 test.beforeEach(async ({ page }) => {

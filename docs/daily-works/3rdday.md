@@ -27,7 +27,7 @@ the following are list of types:
 3. Continue on phase 1: [DONE]
   - LGN-002 (Invalid email)
   - LGN-003 (Incorrect password)
-4. Wrapping up:[Done]
+4. Wrapping up:[DONE]
   - Commits and push
   - Code review by Kiro
   - Open PR and merge to main branch
