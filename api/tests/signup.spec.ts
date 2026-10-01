@@ -17,7 +17,5 @@ test('first phase signup with name and email', async ({ request }) => {
         '', signupData.country, signupData.state, signupData.city, signupData.zipcode, signupData.mobileNumber
     )
 
-    console.log(await resform.text())
-
     expect(resform.status()).toBe(200);
 });
