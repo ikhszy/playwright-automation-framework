@@ -7,8 +7,12 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  test:
+  api-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,29 +20,91 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-
-      - name: Run tests
-        run: npx playwright test
+      - name: Run API tests
+        run: npx playwright test --project=api
         env:
-          WEB_URL: ${{ secrets.WEB_URL }}
-          API_URL: ${{ secrets.API_URL }}
+          API_URL: ${{ vars.API_URL }}
+          TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
 
-      - name: Upload HTML report
+      - name: Upload API report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-api
           path: playwright-report/
           retention-days: 14
 
-      - name: Comment PR with results
-        if: always() && github.event_name == 'pull_request'
+  ui-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run UI tests
+        run: npx playwright test --project=ui
+        env:
+          WEB_URL: ${{ vars.WEB_URL }}
+          TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+
+      - name: Upload UI report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-ui
+          path: playwright-report/
+          retention-days: 14
+
+  report-comment:
+    needs: [api-tests, ui-tests]
+    if: always() && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download API report
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-report-api
+          path: playwright-report-api/
+
+      - name: Download UI report
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-report-ui
+          path: playwright-report-ui/
+
+      - name: Comment PR with API results
         uses: daun/playwright-report-summary@v3
         with:
-          report-file: playwright-report/report.json
+          report-file: playwright-report-api/report.json
+          comment-title: 'API Test Results'
+
+      - name: Comment PR with UI results
+        uses: daun/playwright-report-summary@v3
+        with:
+          report-file: playwright-report-ui/report.json
+          comment-title: 'UI Test Results'

@@ -27,7 +27,7 @@ test('Remove item', async ({ request }) => {
     expect(await getCart.text()).not.toContain('id="product-1"')
 })
 
-test.only('checkout items', async ({ request }) => {
+test('checkout items', async ({ request }) => {
     const loginApi = new LoginApi(request)
     const prodList = new productListApi(request)
     const cartApi = new CartApi(request)
