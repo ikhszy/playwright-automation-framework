@@ -66,4 +66,23 @@ export class ProductDetailsPage extends BasePage {
 
         return formattedTotal;
     }
+
+    async addProductOnly(quantity: string) {
+        await expect(this.productTitle).toBeVisible()
+        await expect(this.productImage).toBeVisible()
+        await expect(this.productQuantity).toBeVisible()
+        await expect(this.productPrice).toBeVisible()
+
+        const title = await this.productTitle.textContent();
+        const priceText = await this.productPrice.textContent();
+
+        console.log('item name: ' + title + ' valued at: ' + priceText)
+
+        await this.productQuantity.fill(quantity)
+        await this.addCartButton.click()
+
+        await expect(this.notificationSuccessButton).toBeVisible()
+
+        console.log('Successfully add item to cart')
+    }
 }

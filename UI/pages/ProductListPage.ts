@@ -79,4 +79,20 @@ export class ProductListPage extends BasePage {
         await this.successButton.click()
         console.log('dialog dismissed')
     }
+
+    async addMultipleItems(itemCount: number) {
+        for(let i = 0; i < itemCount; i++) {
+            const productImage = this.page.locator('.productinfo').nth(i)
+            await expect(productImage).toBeVisible()
+
+            await productImage.hover()
+            await productImage.locator('a[data-product-id]').first().click()
+
+            this.page.waitForTimeout(1000)
+            await expect(this.successButton).toBeVisible()
+            await this.dismissSuccessDialog()
+        }
+
+        console.log('successfully add ' + itemCount + ' items to Cart')
+    }
 }

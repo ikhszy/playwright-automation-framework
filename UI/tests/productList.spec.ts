@@ -41,4 +41,11 @@ test.describe('Product List Page', () => {
 
         await expect(page).toHaveURL(new RegExp(`/product_details/${firstProductId}`))
     });
+
+    test('add multiple products', async ({ page }) => {
+        const productListPage = new ProductListPage(page);
+
+        await page.goto('/products')
+        await productListPage.addMultipleItems(3)
+    })
 });
