@@ -64,7 +64,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run UI tests
-        run: npx playwright test --project=ui
+        run: npx playwright test --project=UI
         env:
           WEB_URL: ${{ secrets.WEB_URL }}
           TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
