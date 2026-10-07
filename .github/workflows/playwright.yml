@@ -28,7 +28,7 @@ jobs:
       - name: Run API tests
         run: npx playwright test --project=api
         env:
-          API_URL: ${{ vars.API_URL }}
+          API_URL: ${{ secrets.API_URL }}
           TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
 
@@ -66,7 +66,7 @@ jobs:
       - name: Run UI tests
         run: npx playwright test --project=ui
         env:
-          WEB_URL: ${{ vars.WEB_URL }}
+          WEB_URL: ${{ secrets.WEB_URL }}
           TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
 
