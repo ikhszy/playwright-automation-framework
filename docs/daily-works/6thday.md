@@ -18,3 +18,11 @@
 # API - Cart
 - add model for cart
 - add test for cart with and without items
+
+# API - product model
+- Add function to add multiple item to cart
+- add function to get multiple product id
+- moved addToCart function to Cart model
+
+# API - Product List
+- changes as addToCart moved to Cart model
