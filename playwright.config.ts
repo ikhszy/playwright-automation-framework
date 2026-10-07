@@ -8,8 +8,9 @@ export default defineConfig({
     retries: process.env.CI ? 2 : 0,
 
     reporter: [
-        ["html"],
-        ["list"]
+        ["html", { open: "never" }],
+        ["list"],
+        ["json", { outputFile: "playwright-report/report.json" }]
     ],
 
     use: {
