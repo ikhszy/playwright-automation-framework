@@ -33,7 +33,7 @@ export default defineConfig({
     projects: [
     {
       name: 'ui',
-      testDir: './ui/tests',
+      testDir: './UI/tests',
       use: { baseURL: process.env.WEB_URL, ...devices['Desktop Chrome'] },
     },
     {

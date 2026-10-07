@@ -5,7 +5,8 @@ import signupData from '../../test_data/signup.json';
 
 test('first phase signup with name and email', async ({ request }) => {
   const signupApi = new SignupApi(request);
-  const resfirst = await signupApi.firstSignup(signupData.firstName, 'testing_ikhsan_1@mail.com');
+  const uniqueEmail = `testing_ikhsan_${Date.now()}@mail.com`;
+  const resfirst = await signupApi.firstSignup(signupData.firstName, uniqueEmail);
 
   expect(resfirst.status()).toBe(200);
 
