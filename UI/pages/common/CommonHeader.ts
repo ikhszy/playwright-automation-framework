@@ -13,8 +13,8 @@ export class CommonHeader extends BasePage {
     constructor(page: Page) {
         super(page)
         this.home = page.locator('a', {hasText: ' Home'});
-        this.products = page.locator('a', {hasText: ' Products'});
-        this.cart = page.locator('a', {hasText: ' Cart'});
+        this.products = page.locator('a[href="/products"]');
+        this.cart = page.locator('a[href="/view_cart"]');
         this.login = page.locator('a', {hasText: ' Signup / Login'});
         this.logout = page.locator('a', {hasText: ' Logout'});
 
@@ -37,14 +37,14 @@ export class CommonHeader extends BasePage {
     }
 
     async gotoProduct() {
-        await expect(this.products).toBeVisible();
+        await expect(this.products.first()).toBeVisible();
 
-        await this.products.click();
+        await this.products.first().click();
     }
 
     async gotoCart() {
-        await expect(this.cart).toBeVisible();
+        await expect(this.cart.first()).toBeVisible();
 
-        await this.cart.click();
+        await this.cart.first().click();
     }
 }

@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { productListApi } from '../models/product.model';
+import { CartApi } from '../models/cart.model';
 
 test('Search product', async ({ request }) => {
     const prodList = new productListApi(request)
@@ -12,6 +13,7 @@ test('Search product', async ({ request }) => {
 test('Add to cart', async ({ request }) => {
     const prodList = new productListApi(request)
     const allProd = await prodList.getAllProducts()
+    const cartApi = new CartApi(request)
 
     expect(allProd.status()).toBe(200)
 
@@ -22,7 +24,7 @@ test('Add to cart', async ({ request }) => {
         throw new Error('No product id found')
     }
 
-    const addCart = await prodList.addToCart(firstId)
+    const addCart = await cartApi.addToCart(firstId)
 
     expect(addCart.status()).toBe(200)
     expect(await addCart.text()).toContain('Added To Cart')
