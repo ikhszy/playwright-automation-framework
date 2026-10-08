@@ -12,7 +12,7 @@ test('first phase signup with name and email', async ({ request }) => {
 
   const resform = await signupApi.formFill(
         resfirst,
-        'mr', signupData.firstName, 'testing_ikhsan_1@mail.com',
+        'mr', signupData.firstName, uniqueEmail,
         signupData.password, signupData.day, signupData.month, signupData.year,
         signupData.firstName, signupData.lastName, signupData.company, signupData.address, 
         '', signupData.country, signupData.state, signupData.city, signupData.zipcode, signupData.mobileNumber
