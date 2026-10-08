@@ -88,7 +88,6 @@ export class ProductListPage extends BasePage {
             await productImage.hover()
             await productImage.locator('a[data-product-id]').first().click()
 
-            this.page.waitForTimeout(1000)
             await expect(this.successButton).toBeVisible()
             await this.dismissSuccessDialog()
         }
