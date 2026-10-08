@@ -12,7 +12,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      api: ${{ steps.filter.outputs.api }}
+      ui: ${{ steps.filter.outputs.ui }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect changed paths
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            api:
+              - 'api/**'
+            ui:
+              - 'UI/**'
+
   api-tests:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.api == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -41,6 +61,8 @@ jobs:
           retention-days: 14
 
   ui-tests:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.ui == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -80,30 +102,38 @@ jobs:
 
   report-comment:
     needs: [api-tests, ui-tests]
-    if: always() && github.event_name == 'pull_request'
+    if: |
+      always() &&
+      github.event_name == 'pull_request' &&
+      (needs.api-tests.result == 'success' || needs.api-tests.result == 'failure' ||
+       needs.ui-tests.result == 'success' || needs.ui-tests.result == 'failure')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: Download API report
+        if: needs.api-tests.result == 'success' || needs.api-tests.result == 'failure'
         uses: actions/download-artifact@v4
         with:
           name: playwright-report-api
           path: playwright-report-api/
 
       - name: Download UI report
+        if: needs.ui-tests.result == 'success' || needs.ui-tests.result == 'failure'
         uses: actions/download-artifact@v4
         with:
           name: playwright-report-ui
           path: playwright-report-ui/
 
       - name: Comment PR with API results
+        if: needs.api-tests.result == 'success' || needs.api-tests.result == 'failure'
         uses: daun/playwright-report-summary@v3
         with:
           report-file: playwright-report-api/report.json
           comment-title: 'API Test Results'
 
       - name: Comment PR with UI results
+        if: needs.ui-tests.result == 'success' || needs.ui-tests.result == 'failure'
         uses: daun/playwright-report-summary@v3
         with:
           report-file: playwright-report-ui/report.json
