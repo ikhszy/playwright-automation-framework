@@ -1,0 +1,140 @@
+# .github/workflows/playwright.yml
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      api: ${{ steps.filter.outputs.api }}
+      ui: ${{ steps.filter.outputs.ui }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect changed paths
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            api:
+              - 'api/**'
+            ui:
+              - 'UI/**'
+
+  api-tests:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.api == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run API tests
+        run: npx playwright test --project=api
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+
+      - name: Upload API report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-api
+          path: playwright-report/
+          retention-days: 14
+
+  ui-tests:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.ui == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run UI tests
+        run: npx playwright test --project=ui
+        env:
+          WEB_URL: ${{ secrets.WEB_URL }}
+          TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+
+      - name: Upload UI report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-ui
+          path: playwright-report/
+          retention-days: 14
+
+  report-comment:
+    needs: [api-tests, ui-tests]
+    if: |
+      always() &&
+      github.event_name == 'pull_request' &&
+      (needs.api-tests.result == 'success' || needs.api-tests.result == 'failure' ||
+       needs.ui-tests.result == 'success' || needs.ui-tests.result == 'failure')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download API report
+        if: needs.api-tests.result == 'success' || needs.api-tests.result == 'failure'
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-report-api
+          path: playwright-report-api/
+
+      - name: Download UI report
+        if: needs.ui-tests.result == 'success' || needs.ui-tests.result == 'failure'
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-report-ui
+          path: playwright-report-ui/
+
+      - name: Comment PR with API results
+        if: needs.api-tests.result == 'success' || needs.api-tests.result == 'failure'
+        uses: daun/playwright-report-summary@v3
+        with:
+          report-file: playwright-report-api/report.json
+          comment-title: 'API Test Results'
+
+      - name: Comment PR with UI results
+        if: needs.ui-tests.result == 'success' || needs.ui-tests.result == 'failure'
+        uses: daun/playwright-report-summary@v3
+        with:
+          report-file: playwright-report-ui/report.json
+          comment-title: 'UI Test Results'

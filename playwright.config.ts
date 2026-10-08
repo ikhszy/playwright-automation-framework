@@ -8,8 +8,9 @@ export default defineConfig({
     retries: process.env.CI ? 2 : 0,
 
     reporter: [
-        ["html"],
-        ["list"]
+        ["html", { open: "never" }],
+        ["list"],
+        ["json", { outputFile: "playwright-report/report.json" }]
     ],
 
     use: {
@@ -32,7 +33,7 @@ export default defineConfig({
     projects: [
     {
       name: 'ui',
-      testDir: './ui/tests',
+      testDir: './UI/tests',
       use: { baseURL: process.env.WEB_URL, ...devices['Desktop Chrome'] },
     },
     {
