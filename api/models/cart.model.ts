@@ -26,12 +26,4 @@ export class CartApi {
             }
         })
     }
-
-    async checkoutCart() {
-        return this.request.get('/checkout', {
-            headers: {
-                Referer: 'https://automationexercise.com/view_cart'
-            }
-        })
-    }
 }
